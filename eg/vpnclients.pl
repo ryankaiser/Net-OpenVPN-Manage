@@ -35,7 +35,9 @@ if ( $lref->{nclients} > 0 ) {
         printf("%2s %-16s: %-29s\n","",
             ${$sref->{HEADER}{ROUTING_TABLE}}[3],
             ${$sref->{ROUTING_TABLE}}[$i][3]);
-        print "\n";
+		if ( $i != ( $lref->{nclients} - 1 ) ) {
+            print "\n";
+        }
     }
 }
 else {
