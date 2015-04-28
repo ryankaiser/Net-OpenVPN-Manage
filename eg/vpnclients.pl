@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use Net::OpenVPN::Manage;
-use 5.010;
 
 my $vpn = Net::OpenVPN::Manage->new({
         host => shift || 'localhost',
@@ -11,7 +10,7 @@ my $vpn = Net::OpenVPN::Manage->new({
 });
 
 unless ($vpn->connect()) {
-    say $vpn->{error_msg};
+    print "$vpn->{error_msg}\n";
     exit 2;
 }
 
