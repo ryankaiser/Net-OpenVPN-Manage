@@ -1,4 +1,6 @@
-Net::OpenVPN::Manage
+Net-OpenVPN-Manage-1.0
+
+Provides: Net::OpenVPN::Manage
 
 Interact with a running OpenVPN 2.0.X process 
 via it's management interface.
