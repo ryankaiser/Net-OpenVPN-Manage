@@ -11,7 +11,7 @@ my $vpn = Net::OpenVPN::Manage->new({
 
 unless ($vpn->connect()) {
     print "$vpn->{error_msg}\n";
-    exit 2;
+    exit 1;
 }
 
 my $sref = $vpn->status_ref();
@@ -34,13 +34,13 @@ if ( $lref->{nclients} > 0 ) {
         printf("%2s %-16s: %-29s\n","",
             ${$sref->{HEADER}{ROUTING_TABLE}}[3],
             ${$sref->{ROUTING_TABLE}}[$i][3]);
-        if ( $i != ( $lref->{nclients} - 1 ) ) {
+		if ( $i != ( $lref->{nclients} - 1 ) ) {
             print "\n";
         }
     }
 }
 else {
     print "No clients are currently connected.\n";
-    exit 1;
+    exit 0;
 }
 
