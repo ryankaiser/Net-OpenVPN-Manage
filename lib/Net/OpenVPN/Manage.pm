@@ -13,322 +13,377 @@ $VERSION = '0.02';
 #                    timeout => 20
 #                 });
 sub new {
-  my $class = shift;
-  my $self  = shift;
+    my $class = shift;
+    my $self  = shift;
 
-  # Check if required arguments were passed.
-  if (! ( $self->{'host'} && $self->{'port'} )){
+    # Check if required arguments were passed.
+    if (! ( $self->{'host'} && $self->{'port'} )) {
         return 0;
-  }
+    }
 
-  bless  ($self, $class);
-  return ($self);
+    bless  ($self, $class);
+    return ($self);
 }
 
 # $vpn->auth_retry($arg);
 sub auth_retry {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'auth-retry '.$arg,  Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'auth-retry '.$arg,  Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # $result = $vpn->echo($arg);
 sub echo {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'echo '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
-  unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  if ($telnet->last_prompt =~ /END.*\n/){
-    return join('', @output);
-  } else {
-    return $telnet->last_prompt();
-  }
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'echo '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
+
+    unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    if ($telnet->last_prompt =~ /END.*\n/) {
+        return join('', @output);
+    }
+    else {
+        return $telnet->last_prompt();
+    }
 }
 
 # $help_text = $vpn->help();
 sub help() {
-  my $self = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'help', Prompt => '/(END.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /END.*\n/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return join('', @output);
+    my $self = shift;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'help', Prompt => '/(END.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /END.*\n/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return join('', @output);
 }
 
 # $result = $vpn->hold($arg);
 sub hold {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'hold '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'hold '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # $result = $vpn->kill($arg);
 sub kill($) {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'kill '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'kill '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # $result =  $vpn->load_stats();
 sub load_stats {
-  my $self = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'load-stats', Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'load-stats', Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # $hash_ref = $vpn->load_stats_ref();
 sub load_stats_ref {
-  my $href;
-  my $self = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'load-stats', Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  foreach my $item (split ',', $telnet->last_prompt()) {
-    if ($item =~ /(nclients|bytesin|bytesout)=(\d+)/) {
-      $href->{$1} = $2;
+    my $href;
+    my $self = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'load-stats', Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
     }
-  }
-  return $href;
+
+    foreach my $item (split ',', $telnet->last_prompt()) {
+        if ($item =~ /(nclients|bytesin|bytesout)=(\d+)/) {
+            $href->{$1} = $2;
+        }
+    }
+
+    return $href;
 }
 
 # $result = $vpn->log($arg);
 sub log($) {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'log '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
-  unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  if ($telnet->last_prompt =~ /END.*\n/){
-    return \@output;
-  } else {
-    return $telnet->last_prompt();
-  }
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'log '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
+
+    unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    if ($telnet->last_prompt =~ /END.*\n/) {
+        return \@output;
+    }
+    else {
+        return $telnet->last_prompt();
+    }
 }
 
 # $result = $vpn->mute();
 sub mute {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'mute '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'mute '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # Not implemented
 sub net {
-  my $self = shift;
-  $self->{error_msg} = "net: command not implemented.\n";
-  return 0;
+    my $self = shift;
+    $self->{error_msg} = "net: command not implemented.\n";
+    return 0;
 }
 
 # Not implemented
 sub password {
-  my $self = shift;
-  $self->{error_msg} = "password: command not implemented.\n";
-  return 0;
+    my $self = shift;
+    $self->{error_msg} = "password: command not implemented.\n";
+    return 0;
 }
 
 # $result = $vpn->signal('SIGHUP');
 sub signal($) {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'signal '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'signal '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # $array_ref = $vpn->state('all');
 sub state {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'state '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
-  unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  if ($telnet->last_prompt =~ /END.*\n/){
-    return \@output;
-  } else {
-    return $telnet->last_prompt();
-  }
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'state '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
+
+    unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    if ($telnet->last_prompt =~ /END.*\n/) {
+        return \@output;
+    }
+    else {
+        return $telnet->last_prompt();
+    }
 }
 
 # $array_ref = $vpn->status(2);
 sub status {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'status '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
-  unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  if ($telnet->last_prompt =~ /END.*\n/){
-    return \@output;
-  } else {
-    return $telnet->last_prompt();
-  }
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'status '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
+
+    unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    if ($telnet->last_prompt =~ /END.*\n/) {
+        return \@output;
+    }
+    else {
+        return $telnet->last_prompt();
+    }
 }
 
 # $hash_ref = $vpn->status_ref();
 sub status_ref() {
-  my $ref;
-  my $self = shift;
-  my $arg  = 2;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'status '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
-  unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  unless ($telnet->last_prompt =~ /END.*\n/){
-    return $telnet->last_prompt();
-  }
-  foreach my $ln ( @output ){
-    if (( $ln eq '' ) || ( $ln =~ /^\s*$/ )){
-      next;
-    } elsif (( $ln =~ s/^(ROUTING_TABLE),// ) || ( $ln =~ s/^(CLIENT_LIST),// )){
-      my @a = split ',', $ln;
-      push @{$ref->{$1}}, \@a;
-    } elsif ( $ln =~ s/^(HEADER),([\w\_]+),// ){
-      push @{$ref->{$1}{$2}}, split(',', $ln);
-    } elsif ( $ln =~ s/^(TITLE),// ){
-      $ref->{$1}=$ln;
-    } elsif ( $ln =~ s/^(TIME),// ){
-      $ref->{$1}=$ln;
-    } elsif ( $ln =~ s/^(GLOBAL_STATS),// ){
-      $ref->{$1}=$ln;
+    my $ref;
+    my $self = shift;
+    my $arg  = 2;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'status '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n|END.*\n)/');
+
+    unless ($telnet->last_prompt =~ /(SUCCESS:.*|END.*\n)/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
     }
-  }
-  return $ref;
+
+    unless ($telnet->last_prompt =~ /END.*\n/) {
+        return $telnet->last_prompt();
+    }
+
+    foreach my $ln ( @output ) {
+        if (( $ln eq '' ) || ( $ln =~ /^\s*$/ )) {
+          next;
+        }
+        elsif (( $ln =~ s/^(ROUTING_TABLE),// ) || ( $ln =~ s/^(CLIENT_LIST),// )) {
+          my @a = split ',', $ln;
+          push @{$ref->{$1}}, \@a;
+        }
+        elsif ( $ln =~ s/^(HEADER),([\w\_]+),// ) {
+          push @{$ref->{$1}{$2}}, split(',', $ln);
+        }
+        elsif ( $ln =~ s/^(TITLE),// ) {
+          $ref->{$1}=$ln;
+        }
+        elsif ( $ln =~ s/^(TIME),// ) {
+          $ref->{$1}=$ln;
+        }
+        elsif ( $ln =~ s/^(GLOBAL_STATS),// ) {
+          $ref->{$1}=$ln;
+        }
+    }
+
+    return $ref;
 }
 
 # Not implemented
 sub test {
-  my $self = shift;
-  $self->{error_msg} = "test: command not implemented.\n";
-  return 0;
+    my $self = shift;
+    $self->{error_msg} = "test: command not implemented.\n";
+    return 0;
 }
 
 # Not implemented
 sub username {
-  my $self = shift;
-  $self->{error_msg} = "username: command not implemented.\n";
-  return 0;
+    my $self = shift;
+    $self->{error_msg} = "username: command not implemented.\n";
+    return 0;
 }
 
 # $result = $vpn->verb();
 sub verb {
-  my $self = shift;
-  my $arg  = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  $telnet->cmd(String => 'verb '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /SUCCESS:.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return $telnet->last_prompt();
+    my $self = shift;
+    my $arg  = shift;
+    my $telnet = $self->{objects}{_telnet_};
+
+    $telnet->cmd(String => 'verb '.$arg, Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return $telnet->last_prompt();
 }
 
 # $version = $vpn->version();
 sub version() {
-  my $self = shift;
-  my $telnet = $self->{objects}{_telnet_};
-  my @output = $telnet->cmd(String => 'version', Prompt => '/(END.*\n|ERROR:.*\n)/');
-  unless ($telnet->last_prompt =~ /END.*/){
-    $self->{error_msg} = $telnet->last_prompt();
-    return 0;
-  }
-  return join('', @output);
+    my $self = shift;
+    my $telnet = $self->{objects}{_telnet_};
+    my @output = $telnet->cmd(String => 'version', Prompt => '/(END.*\n|ERROR:.*\n)/');
+
+    unless ($telnet->last_prompt =~ /END.*/) {
+        $self->{error_msg} = $telnet->last_prompt();
+        return 0;
+    }
+
+    return join('', @output);
 }
 
 # $boolean = $vpn->connect();
 sub connect() {
-  my $self = shift;
-  my $telnet = Net::Telnet->new(Telnetmode => 0);
+    my $self = shift;
+    my $telnet = Net::Telnet->new(Telnetmode => 0);
 
-  # Set non-default timeout if one was specified when the object was created.
-  if ( $self->{timeout} ){ $telnet->timeout($self->{timeout}); }
-
-  # Set errormode to return so any timeout events don't die our script.
-  $telnet->errmode('return');
-
-  # Verify successful connection else error.
-  unless ($telnet->open(Host => $self->{host}, Port => $self->{port})){
-    $self->{error_msg} = 'Connection failed, verify host name/port and connectivity.';
-    return 0;
-  }
-
-  # If a password was given, login to interface.
-  if ( $self->{password} ){
-    print $telnet->cmd(String => $self->{password}, Prompt => '/ENTER PASSWORD:/');
-    unless ($telnet->last_prompt() =~ /ENTER PASSWORD/){
-      $self->{error_msg} = 'Login failed, verify password and that management interface is not in use.';
-      return 0;
-    } else {
-      # Remove extra lines returned from login that we don't want in later output.
-      $telnet->getline();
-      $telnet->getline();
+    # Set non-default timeout if one was specified when the object was created.
+    if ( $self->{timeout} ) {
+        $telnet->timeout($self->{timeout});
     }
-  }
 
-  # If no password used verify connection using command.
-  else {
-    # Test if valid session by issuing the 'verb' command and checking response.
-    # not a great way to validate, but it will work.
-    $telnet->cmd(String => 'verb', Prompt => '/(SUCCESS:.*\n|ENTER PASSWORD:)/');
-    unless ($telnet->last_prompt =~ /SUCCESS/){
-      $self->{error_msg} = 'Invalid response from host, is a password expected, or the management interface in use?';
-      return 0;
+    # Set errormode to return so any timeout events don't die our script.
+    $telnet->errmode('return');
+
+    # Verify successful connection else error.
+    unless ($telnet->open(Host => $self->{host}, Port => $self->{port})) {
+        $self->{error_msg} = 'Connection failed, verify host name/port and connectivity.';
+        return 0;
     }
-  }
 
-  $self->{objects}{_telnet_} = $telnet;
-  return 1;
+    # If a password was given, login to interface.
+    if ( $self->{password} ) {
+        print $telnet->cmd(String => $self->{password}, Prompt => '/ENTER PASSWORD:/');
+
+        unless ($telnet->last_prompt() =~ /ENTER PASSWORD/) {
+            $self->{error_msg} = 'Login failed, verify password and that management interface is not in use.';
+            return 0;
+        }
+        else {
+          # Remove extra lines returned from login that we don't want in later output.
+          $telnet->getline();
+          $telnet->getline();
+        }
+    }
+    # If no password used verify connection using command.
+    else {
+        # Test if valid session by issuing the 'verb' command and checking response.
+        # not a great way to validate, but it will work.
+        $telnet->cmd(String => 'verb', Prompt => '/(SUCCESS:.*\n|ENTER PASSWORD:)/');
+
+        unless ($telnet->last_prompt =~ /SUCCESS/) {
+          $self->{error_msg} = 'Invalid response from host, is a password expected, or the management interface in use?';
+          return 0;
+        }
+    }
+
+    $self->{objects}{_telnet_} = $telnet;
+
+    return 1;
 }
 
 1;
@@ -370,7 +425,7 @@ commands on the interface and returns the results or errors that result.
   });
 
   # Error if unable to connect.
-  unless($vpn->connect()){
+  unless($vpn->connect()) {
     print $vpn->{error_msg}."\n";
     exit 0;
   }
@@ -542,14 +597,14 @@ This structure is identical to that in $r->{CLIENT_LIST}, with an array containi
  ]
 
          my $r = $vpn->status_ref();
-         foreach my $array_ref ( @{$r->{CLIENT_LIST}} ){
+         foreach my $array_ref ( @{$r->{CLIENT_LIST}} ) {
                 print "Common Name: $$array_ref[0], bytes sent: $$array_ref[3], bytes recvd: $$array_ref[4]\n";
          }
 
         -- or to use the column heading ref --
 
          my $r = $vpn->status_ref();
-         foreach my $array_ref ( @{$r->{CLIENT_LIST}} ){
+         foreach my $array_ref ( @{$r->{CLIENT_LIST}} ) {
                 print "$r->{HEADER}{CLIENT_LIST}[0]: $$array_ref[0], $r->{HEADER}{CLIENT_LIST}[3]: $$array_ref[3], $r->{HEADER}{CLIENT_LIST}[4]: $$array_ref[4]";
          }
 
@@ -590,21 +645,21 @@ Keep in mind that to extend this, you could have hyperlinks that callback and ca
         print $cgi->header();
 
         my $vpn=Net::OpenVPN::Manage->new({host=>'openvpn.domain.com', port=>'1195', password=>'password', timeout=>'5'});
-        unless ($vpn->connect()){
+        unless ($vpn->connect()) {
                 print $vpn->{error_msg}."\n\n";
                 exit 0;
         }
 
         my $r=$vpn->status_ref();
         print qq|<table border="1"><tr>|;
-        foreach my $heading ( @{$r->{HEADER}{CLIENT_LIST}} ){
+        foreach my $heading ( @{$r->{HEADER}{CLIENT_LIST}} ) {
                 print qq|<th>$heading</th>|;
         }
 
         print qq|</tr>|;
-        foreach my $aref ( @{$r->{CLIENT_LIST}} ){
+        foreach my $aref ( @{$r->{CLIENT_LIST}} ) {
                 print qq|<tr>|;
-                foreach my $r ( @{$aref} ){
+                foreach my $r ( @{$aref} ) {
                         print qq|<td>$r</td>|;
                 }
                 print qq|</tr>|;
