@@ -416,7 +416,7 @@ sub show_license {
         while ( my $row = <$fh> ) {
             push (@rows, $row);
         }
-        return join("", @rows);
+        return @rows;
     }
     elsif ( eval {
                 require LWP::Simple;
@@ -566,7 +566,7 @@ Returns the number of connected clients, bytes in, and bytes out as a comma-deli
 
 Returns a reference to hash with key-value pairs corresponding to the three statistics provided by the 'load-stats' command: nclients,bytesin,bytesout.
 
-    # prints the number of connected clients
+    # prints the number of connected clients.
     print $vpn->load_stats_ref()->{nclients};
 
 =item $vpn->log( $arg );
