@@ -28,9 +28,6 @@ Win32:
 
 
 Note:
-	This module is fairly rudimentary; if you have any problems give it a quick 
-look through. With the exception of calls to the "load-stats" management interface
-command, which was implemented in OpenVPN v2.1, all features should be compatible 
-with OpenVPN v2.0 and later. I am using it now with OpenVPN 2.3.2.
+	This module is fairly rudimentary; if you have any problems give it a quick look through. With the exception of calls to the "load-stats" management interface command, which was implemented in OpenVPN v2.1, all features should be compatible with OpenVPN v2.0 and later. I am using it now with OpenVPN 2.3.2.
 
 For information on how to use the supplied methods do a `perldoc Net::OpenVPN::Manage`
