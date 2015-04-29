@@ -1,3 +1,20 @@
+#  vpnclients.pl
+#
+#  Copyright (C) 2015 Ryan Kaiser <ryandkaiser@gmail.com>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 #!/usr/bin/perl
 
 use strict;
@@ -14,8 +31,11 @@ unless ($vpn->connect()) {
     exit 1;
 }
 
+print $vpn->load_stats()."\n";
+
 my $sref = $vpn->status_ref();
 my $lref = $vpn->load_stats_ref();
+print $vpn->load_stats_ref->{nclients};
 
 if ( $lref->{nclients} > 0 ) {
     for (my $i = 0; $i < $lref->{nclients}; $i++) {
@@ -43,4 +63,3 @@ else {
     print "No clients are currently connected.\n";
     exit 0;
 }
-
