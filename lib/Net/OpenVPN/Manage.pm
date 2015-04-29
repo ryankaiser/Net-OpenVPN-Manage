@@ -405,7 +405,7 @@ sub connect() {
 }
 
 # $vpn->show_license();
-sub show_license {
+sub license {
    my $self = shift;
    my $path = __FILE__;
 
