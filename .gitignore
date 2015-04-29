@@ -1,4 +1,5 @@
 Makefile*
 !Makefile.PL
-MYMETA.json
-MYMETA.yml
+*.yml
+!META.yml
+*.json
