@@ -4,7 +4,7 @@ use strict;
 use Net::Telnet;
 use vars qw( $VERSION );
 
-$VERSION = '0.02';
+$VERSION = '1.0';
 
 # $vpn = Net::OpenVPN::Manage->new({
 #                    host => 'hostname.domain.com',
