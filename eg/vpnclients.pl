@@ -31,14 +31,11 @@ unless ($vpn->connect()) {
     exit 1;
 }
 
-print $vpn->load_stats()."\n";
-
 my $sref = $vpn->status_ref();
-my $lref = $vpn->load_stats_ref();
-print $vpn->load_stats_ref->{nclients};
+my $nclients = $vpn->load_stats_ref()->{nclients};
 
-if ( $lref->{nclients} > 0 ) {
-    for (my $i = 0; $i < $lref->{nclients}; $i++) {
+if ( $nclients > 0 ) {
+    for (my $i = 0; $i < $nclients; $i++) {
         printf("%2s %-16s: %-29s\n","",
             ${$sref->{HEADER}{CLIENT_LIST}}[0],
             ${$sref->{CLIENT_LIST}}[$i][0]);
@@ -54,7 +51,7 @@ if ( $lref->{nclients} > 0 ) {
         printf("%2s %-16s: %-29s\n","",
             ${$sref->{HEADER}{ROUTING_TABLE}}[3],
             ${$sref->{ROUTING_TABLE}}[$i][3]);
-        if ( $i != ( $lref->{nclients} - 1 ) ) {
+        if ( $i != ( $nclients - 1 ) ) {
             print "\n";
         }
     }
