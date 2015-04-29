@@ -559,7 +559,7 @@ Kills the VPN connection referenced. The argument may be either the common name 
 
 Returns the number of connected clients, bytes in, and bytes out as a comma-delimited scalar.
 
-    # prints raw output of 'load-stats' command
+    # prints raw output of 'load-stats' command.
     $vpn->load_stats();
 
 =item $vpn->load_stats_ref();
