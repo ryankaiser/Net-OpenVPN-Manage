@@ -3,3 +3,5 @@ Makefile*
 *.yml
 !META.yml
 *.json
+blib/
+pm_to_blib
