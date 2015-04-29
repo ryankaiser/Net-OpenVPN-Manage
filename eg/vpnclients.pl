@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 #  vpnclients.pl
 #
 #  Copyright (C) 2015 Ryan Kaiser <ryandkaiser@gmail.com>
@@ -15,7 +17,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-#!/usr/bin/perl
 
 use strict;
 use warnings;
