@@ -144,16 +144,8 @@ sub load_stats {
 sub load_stats_ref {
     my $href;
     my $self = shift;
-    my $telnet = $self->{objects}{_telnet_};
 
-    $telnet->cmd(String => 'load-stats', Prompt => '/(SUCCESS:.*\n|ERROR:.*\n)/');
-
-    unless ($telnet->last_prompt =~ /SUCCESS:.*/) {
-        $self->{error_msg} = $telnet->last_prompt();
-        return 0;
-    }
-
-    foreach my $item (split ',', $telnet->last_prompt()) {
+    foreach my $item (split ',', $self->load_stats()) {
         if ($item =~ /(nclients|bytesin|bytesout)=(\d+)/) {
             $href->{$1} = $2;
         }
