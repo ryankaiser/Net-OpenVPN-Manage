@@ -1,10 +1,28 @@
+#  Manage.pm
+#
+#  Copyright (C) 2006 Aaron Meyer / MeyerTech.net
+#  Copyright (C) 2015 Ryan Kaiser <ryandkaiser@gmail.com>
+#
+#  This module is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This module is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this module.  If not, see <http://www.gnu.org/licenses/>.
+#
 package Net::OpenVPN::Manage;
 
 use strict;
 use Net::Telnet;
 use vars qw( $VERSION );
 
-$VERSION = '1.0';
+$VERSION = '1.00';
 
 # $vpn = Net::OpenVPN::Manage->new({
 #                    host => 'hostname.domain.com',
@@ -386,6 +404,32 @@ sub connect() {
     return 1;
 }
 
+# $vpn->show_license();
+sub show_license {
+   my $self = shift;
+   my $path = __FILE__;
+
+   $path =~ s/Manage\.pm/license.txt/;
+
+    if ( open(my $fh, '<:encoding(UTF-8)', $path ) ) {
+        my @rows;
+        while ( my $row = <$fh> ) {
+            push (@rows, $row);
+        }
+        return join("", @rows);
+    }
+    elsif ( eval {
+                require LWP::Simple;
+                LWP::Simple->import();
+                1;
+            } ) {
+        return get('http://gnu.org/licenses/gpl-2.0.txt');
+    }
+    else {
+        die "Couldn't get license information.";
+    }
+}
+
 1;
 
 __END__
@@ -510,6 +554,20 @@ Kills the VPN connection referenced. The argument may be either the common name 
 
         # kills the connection where the client is connecting from: '63.73.83.93:17023'
         $vpn->kill('63.73.83.93:17023');
+
+=item $vpn->load_stats();
+
+Returns the number of connected clients, bytes in, and bytes out as a comma-delimited scalar.
+
+    # prints raw output of 'load-stats' command
+    $vpn->load_stats();
+
+=item $vpn->load_stats_ref();
+
+Returns a reference to hash with key-value pairs corresponding to the three statistics provided by the 'load-stats' command: nclients,bytesin,bytesout.
+
+    # prints the number of connected clients
+    print $vpn->load_stats_ref()->{nclients};
 
 =item $vpn->log( $arg );
 
@@ -669,9 +727,23 @@ Keep in mind that to extend this, you could have hyperlinks that callback and ca
 
 =head1 AUTHOR
 
-Copyright (c) 2006 Aaron Meyer / MeyerTech.net
+Copyright (C) 2006 Aaron Meyer / MeyerTech.net
 
-This module is free software; you can redistribute it or modify it under
-the same terms as Perl itself.
+Copyright (C) 2015 Ryan Kaiser <ryandkaiser@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This module is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This module is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this module.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
