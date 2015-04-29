@@ -1,0 +1,4 @@
+Makefile*
+!Makefile.PL
+MYMETA.json
+MYMETA.yml
