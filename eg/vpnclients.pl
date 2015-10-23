@@ -22,9 +22,21 @@ use strict;
 use warnings;
 use Net::OpenVPN::Manage;
 
+
+my @args = ();
+
+for my $i (0..1) {
+    next unless defined(my $arg = $ARGV[$i]);
+    if ( $arg eq '-' ) {
+        next unless defined($arg = <STDIN>);
+        chomp( $arg );
+    }
+    $args[$i] = $arg ? $arg : undef ;
+}
+
 my $vpn = Net::OpenVPN::Manage->new({
-        host => shift || 'localhost',
-        port => shift || 5000
+    port => $args[0] || 5000,
+    host => $args[1] || 'localhost'
 });
 
 unless ($vpn->connect()) {
