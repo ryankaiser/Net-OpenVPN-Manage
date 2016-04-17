@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-
+#
 #  vpnclients.pl
 #
 #  Copyright (C) 2015 Ryan Kaiser <ryandkaiser@gmail.com>
@@ -22,7 +22,6 @@ use strict;
 use warnings;
 use Net::OpenVPN::Manage;
 
-
 my @args = ();
 
 for my $i (0..1) {
@@ -39,7 +38,7 @@ my $vpn = Net::OpenVPN::Manage->new({
     host => $args[1] || 'localhost'
 });
 
-unless ($vpn->connect()) {
+unless ( $vpn->connect() ) {
     print "$vpn->{error_msg}\n";
     exit 1;
 }
@@ -48,7 +47,7 @@ my $sref = $vpn->status_ref();
 my $nclients = $vpn->load_stats_ref()->{nclients};
 
 if ( $nclients > 0 ) {
-    for (my $i = 0; $i < $nclients; $i++) {
+    for ( my $i = 0; $i < $nclients; $i++ ) {
         printf("%2s %-16s: %-29s\n","",
             ${$sref->{HEADER}{CLIENT_LIST}}[0],
             ${$sref->{CLIENT_LIST}}[$i][0]);
@@ -71,5 +70,5 @@ if ( $nclients > 0 ) {
 }
 else {
     print "No clients are currently connected.\n";
-    exit 0;
+    exit 2;
 }
