@@ -91,6 +91,7 @@ else {
     );
 }
 
+
 for my $vpn (@vpns) {
     unless ($vpn->connect()) {
         print "$vpn->{error_msg}\n";
@@ -100,64 +101,68 @@ for my $vpn (@vpns) {
     $total_clients += $vpn->{nclients};
 }
 
-if ( $total_clients > 0 ) {
-    for (my $i = 0; $i < scalar(@vpns); $i++) {
-        my $vpn = \$vpns[$i];
-        my $sref = \$$vpn->status_ref();
-        my $headers = \$$sref->{HEADER};
-        my $clients = \$$sref->{CLIENT_LIST};
-        my $routers = \$$sref->{ROUTING_TABLE};
 
-        if ( $$vpn->{nclients} > 0 ) {
-            for (my $j = 0; $j < $$vpn->{nclients}; $j++) {
-                if ($verbose) {
-                    printf("%2s %-16s: %-29s\n","", # Common Name
-                        $$headers->{CLIENT_LIST}[0],
-                        $$clients->[$j][0]);
-                    printf("%2s %-16s: %-29s\n","", # Virtual Address
-                        $$headers->{CLIENT_LIST}[2],
-                        $$clients->[$j][2]);
-                    printf("%2s %-16s: %-29s\n","", # Real Address
-                        $$headers->{CLIENT_LIST}[1],
-                        $$clients->[$j][1]);
-                    printf("%2s %-16s: %-29s\n","", # Connected Since
-                        $$headers->{CLIENT_LIST}[5],
-                        $$clients->[$j][5]);
-                    printf("%2s %-16s: %-29s\n","", # Last Ref
-                        $$headers->{ROUTING_TABLE}[3],
-                        $$routers->[$j][3]);
-                    if ($verbose > 1) {
-                        printf("%2s %-16s: %-29s\n","", # Bytes Received
-                            $$headers->{CLIENT_LIST}[3],
-                            $$clients->[$j][3]);
-                        printf("%2s %-16s: %-29s\n","", # Bytes Sent
-                            $$headers->{CLIENT_LIST}[4],
-                            $$clients->[$j][4]);
-                    }
-                }
-                else {
-                    printf("%-s %-s\n",
-                        $$routers->[$j][0],  # Virtual Address
-                        $$routers->[$j][1]); # Common Name
-                    next;
-                }
-                print "\n" if
-                    ( $j != ( $$vpn->{nclients} - 1 ) );
-            }
+if ( $total_clients > 0 ) {
+    for my $vpn (@vpns) {
+        if ($vpn->{nclients} < 1) {
+            printf("No clients are currently connected (%s:%d)\n",
+                $vpn->{host}, $vpn->{port}) if ($verbose);
+            next;
         }
         else {
-            printf("No clients are currently connected (%s:%d)\n",
-                $$vpn->{host},
-                $$vpn->{port}) if ($verbose);
+            if (scalar(@vpns) > 1 && $vpn != $vpns[-1]) {
+                print "\n";
+            }
+            printf("%2s Client List for %-s:%d\n\n","",
+                $vpn->{host}, $vpn->{port}) if ($verbose);
         }
-        print "\n" if
-            ($i != ( (scalar @vpns) - 1) && $verbose);
-    }
-    exit 0;
+
+        my @clients;
+        my $stats = $vpn->status("2");
+        for my $line (@$stats) {
+            if ($line =~ /^CLIENT_LIST/) {
+                my @parts = split(",", $line);
+                push (@clients, {
+                    cn => $parts[1],
+                    ra => $parts[2],
+                    va => $parts[3],
+                    bi => $parts[4],
+                    bo => $parts[5],
+                    cs => $parts[6],
+               });
+            }            
+        }
+        for my $client (@clients) {
+            if ($verbose) {
+                printf("%2s %-16s: %-29s\n","",
+                    "Common Name", $client->{cn});
+                printf("%2s %-16s: %-29s\n","",
+                    "Virtual Address", $client->{va});
+                printf("%2s %-16s: %-29s\n","",
+                    "Real Address", $client->{ra});
+                printf("%2s %-16s: %-29s\n","",
+                    "Connected Since", $client->{cs});               
+                printf("%2s %-16s: %-29s\n","",
+                    "Bytes In", $client->{bi});
+                printf("%2s %-16s: %-29s\n","",
+                    "Bytes Out", $client->{bo});
+                if ($vpn->{nclients} > 1 && $client != $clients[-1]) {
+                    print "\n";
+                }
+            }
+            else {
+                printf("%-s %-s\n",
+                    $client->{va}, $client->{cn});
+            }
+        }               
+    }        
 }
 else {
-    print "No clients are currently connected.\n";
+    print "No clients are currently connected\n";
 }
+
+exit 0;
+       
 
 __END__
 
